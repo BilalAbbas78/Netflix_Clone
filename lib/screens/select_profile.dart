@@ -10,10 +10,13 @@ class SelectProfileScreen extends StatefulWidget {
 }
 
 class _SelectProfileScreenState extends State<SelectProfileScreen> {
+  bool isEditSelected = false;
 
   List<User> users = [
-    User(name: "Bilal", picture: "picture"),
-    User(name: "Izan", picture: "picture"),
+    User(name: "Bilal", picture: 'assets/profile_icons/profile_1.jpg'),
+    User(name: "Hadeed", picture: 'assets/profile_icons/profile_2.jpg'),
+    User(name: "Izan", picture: 'assets/profile_icons/profile_3.jpg'),
+    User(name: "Jamal", picture: 'assets/profile_icons/profile_1.jpg'),
   ];
 
   @override
@@ -21,16 +24,36 @@ class _SelectProfileScreenState extends State<SelectProfileScreen> {
     return ColoredSafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        appBar: AppBar(
+        appBar: isEditSelected ? AppBar(
           backgroundColor: Colors.transparent,
           title: Image.asset('assets/netflix/select_profile.png', width: 100.0,),
           centerTitle: true,
           actions: [
             IconButton(
-              onPressed: (){},
+              onPressed: (){
+                setState(() {
+                  isEditSelected = !isEditSelected;
+                });
+              },
               icon: const Icon(Icons.mode_edit_outlined, color: Colors.white,),
             )
           ],
+        ) : AppBar(
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
+            onPressed: (){
+              setState(() {
+                isEditSelected = !isEditSelected;
+              });
+            },
+            icon: const Icon(Icons.arrow_back, color: Colors.white,),
+          ),
+          title: Text(
+            "Manage Profiles",
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700),
+          ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -47,24 +70,57 @@ class _SelectProfileScreenState extends State<SelectProfileScreen> {
                 fontWeight: FontWeight.w400,
               ),
             ),
+            const SizedBox(
+              height: 30.0,
+            ),
             GridView.count(
               crossAxisCount: 2,
               shrinkWrap: true,
-              padding: const EdgeInsets.all(20.0),
-              mainAxisSpacing: 20.0,
-              crossAxisSpacing: 20.0,
+              padding: const EdgeInsets.all(20),
+              // mainAxisSpacing: 5,
+              crossAxisSpacing: 20,
               children: users.map((User user) {
                 return GestureDetector(
-                    onTap: (){},
+                    onTap: (){
+                      print(user.name);
+                    },
                     child: Column(
                       children: [
-                        Image.asset(
-                          'assets/netflix/select_profile.png',
-                          width: 100.0,
-                          height: 100.0,
+                        isEditSelected ? ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: Image.asset(
+                            user.picture,
+                            width: 100.0,
+                            height: 100.0,
+                          ),
+                        ) : Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: Image.asset(
+                                user.picture,
+                                width: 100.0,
+                                height: 100.0,
+                              ),
+                            ),
+                            Container(
+                              height: 100.0,
+                              width: 100.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Colors.black.withOpacity(0.7),
+                              ),
+                              child: Icon(
+                                Icons.edit,
+                                size: 40.0,
+                                color: Colors.white,
+                              ),
+
+                            )
+                          ],
                         ),
                         const SizedBox(
-                          height: 10.0,
+                          height: 5,
                         ),
                         Text(
                           user.name,
@@ -75,10 +131,6 @@ class _SelectProfileScreenState extends State<SelectProfileScreen> {
                 );
               }).toList(),
             ),
-
-
-
-
           ],
         ),
       ),
