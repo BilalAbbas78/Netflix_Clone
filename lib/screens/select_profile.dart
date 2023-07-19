@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:netflix_clone/screens/home_page.dart';
 import '../components/components.dart';
 import '../models/models.dart';
 
@@ -6,11 +7,12 @@ class SelectProfileScreen extends StatefulWidget {
   const SelectProfileScreen({super.key});
 
   @override
-  State<SelectProfileScreen> createState() => _SelectProfileScreenState();
+  State<SelectProfileScreen> createState() => SelectProfileScreenState();
 }
 
-class _SelectProfileScreenState extends State<SelectProfileScreen> {
+class SelectProfileScreenState extends State<SelectProfileScreen> {
   bool isEditSelected = false;
+  static late User loggedInUser;
 
   List<User> users = [
     User(name: "Bilal", picture: 'assets/profile_icons/profile_1.jpg'),
@@ -26,6 +28,22 @@ class _SelectProfileScreenState extends State<SelectProfileScreen> {
         backgroundColor: Colors.black,
         appBar: isEditSelected ? AppBar(
           backgroundColor: Colors.transparent,
+          leading: IconButton(
+            onPressed: (){
+              setState(() {
+                isEditSelected = !isEditSelected;
+              });
+            },
+            icon: const Icon(Icons.arrow_back, color: Colors.white,),
+          ),
+          title: const Text(
+            "Manage Profiles",
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700),
+          ),
+        ) : AppBar(
+          backgroundColor: Colors.transparent,
           title: Image.asset('assets/netflix/select_profile.png', width: 100.0,),
           centerTitle: true,
           actions: [
@@ -38,22 +56,6 @@ class _SelectProfileScreenState extends State<SelectProfileScreen> {
               icon: const Icon(Icons.mode_edit_outlined, color: Colors.white,),
             )
           ],
-        ) : AppBar(
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            onPressed: (){
-              setState(() {
-                isEditSelected = !isEditSelected;
-              });
-            },
-            icon: const Icon(Icons.arrow_back, color: Colors.white,),
-          ),
-          title: Text(
-            "Manage Profiles",
-            style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700),
-          ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -82,18 +84,17 @@ class _SelectProfileScreenState extends State<SelectProfileScreen> {
               children: users.map((User user) {
                 return GestureDetector(
                     onTap: (){
-                      isEditSelected ? debugPrint("Select ${user.name}") : debugPrint("Edit ${user.name}");
+                      if(!isEditSelected){
+                        loggedInUser = user;
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen(),));
+                      }
+                      else {
+                        debugPrint("Edit ${user.name}");
+                      }
                     },
                     child: Column(
                       children: [
-                        isEditSelected ? ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: Image.asset(
-                            user.picture,
-                            width: 100.0,
-                            height: 100.0,
-                          ),
-                        ) : Stack(
+                        isEditSelected ? Stack(
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(4),
@@ -110,7 +111,7 @@ class _SelectProfileScreenState extends State<SelectProfileScreen> {
                                 borderRadius: BorderRadius.circular(4),
                                 color: Colors.black.withOpacity(0.7),
                               ),
-                              child: Icon(
+                              child: const Icon(
                                 Icons.edit,
                                 size: 40.0,
                                 color: Colors.white,
@@ -118,6 +119,13 @@ class _SelectProfileScreenState extends State<SelectProfileScreen> {
 
                             )
                           ],
+                        ) : ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: Image.asset(
+                            user.picture,
+                            width: 100.0,
+                            height: 100.0,
+                          ),
                         ),
                         const SizedBox(
                           height: 5,
