@@ -142,8 +142,9 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         children: [
           Image.asset(
-            'assets/netflix/select_profile.png',
-            width: 100.0,
+            'assets/netflix/icon.png',
+            height: 100.0,
+            width: 50.0,
           ),
           const Spacer(),
           IconButton(
