@@ -9,16 +9,46 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<String> images = ["assets/shows/1.jpg", "assets/shows/2.jpg", "assets/shows/3.jpg", "assets/shows/4.jpg",
-    "assets/shows/5.jpg", "assets/shows/6.jpg", "assets/shows/7.jpg", "assets/shows/8.jpg", "assets/shows/9.jpg",
-    "assets/shows/10.jpg", "assets/shows/11.jpg", "assets/shows/12.jpg", "assets/shows/13.jpg"];
+  List<String> images = [
+    "assets/shows/1.jpg",
+    "assets/shows/2.jpg",
+    "assets/shows/3.jpg",
+    "assets/shows/4.jpg",
+    "assets/shows/5.jpg",
+    "assets/shows/6.jpg",
+    "assets/shows/7.jpg",
+    "assets/shows/8.jpg",
+    "assets/shows/9.jpg",
+    "assets/shows/10.jpg",
+    "assets/shows/11.jpg",
+    "assets/shows/12.jpg",
+    "assets/shows/13.jpg"
+  ];
+
+  ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if(scrollController.hasClients && scrollController.positions.isNotEmpty){
+    scrollController.addListener(() {
+      setState(() {
+
+      });
+    });
+    // }
+    // });
+
+    // if (scrollController.hasClients){
+    //
+    // }
+
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+        headerSliverBuilder: (context, innerBoxIsScrolled) =>
+        [
           SliverOverlapAbsorber(
             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
             sliver: SliverAppBar(
@@ -26,11 +56,17 @@ class _HomeScreenState extends State<HomeScreen> {
               automaticallyImplyLeading: false,
               title: customAppBar(),
               // title: Text("Hello"),
-              backgroundColor: Colors.transparent,
+              // backgroundColor: Colors.transparent,
+
+              backgroundColor: scrollController.hasClients
+                  ? getAppbarColor()
+                  : Colors.black.withOpacity(0.0),
+
             ),
           ),
         ],
         body: CustomScrollView(
+          controller: scrollController,
           slivers: <Widget>[
             SliverToBoxAdapter(
               child: Image.asset(images[12]),
@@ -38,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                  for (int x=1; x<=10; x++) {
+                  for (int x = 1; x <= 10; x++) {
                     if (index % 12 == 0) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
@@ -101,29 +137,43 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget customAppBar() {
-    return AppBar(
-      // backgroundColor: Colors.transparent,
-      title: Image.asset(
-        'assets/netflix/select_profile.png',
-        width: 100.0,
-      ),
-      automaticallyImplyLeading: false,
-      actions: [
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.search),
-        ),
-        IconButton(
-          onPressed: () {},
-          icon: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: Image.asset(
-              SelectProfileScreenState.loggedInUser.picture,
-              width: 25.0,
+    return Container(
+      // color: Colors.black.withOpacity(scrollController.position.pixels / scrollController.position.maxScrollExtent),
+      child: Row(
+        children: [
+          Image.asset(
+            'assets/netflix/select_profile.png',
+            width: 100.0,
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () {
+              // print();
+              // print(MediaQuery.of(context).size.);
+            },
+            icon: const Icon(Icons.search, color: Colors.white,),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.asset(
+                SelectProfileScreenState.loggedInUser.picture,
+                width: 25.0,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
+  }
+
+  getAppbarColor() {
+    if (scrollController.position.pixels * 2 < scrollController.position.maxScrollExtent) {
+      return Colors.black.withOpacity(scrollController.position.pixels * 2 / scrollController.position.maxScrollExtent);
+    }
+    else {
+      return Colors.black.withOpacity(0.7);
+    }
   }
 }
