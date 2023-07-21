@@ -86,7 +86,7 @@ class SelectProfileScreenState extends State<SelectProfileScreen> {
                     onTap: (){
                       if(!isEditSelected){
                         loggedInUser = user;
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen(),));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
                       }
                       else {
                         debugPrint("Edit ${user.name}");
